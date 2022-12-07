@@ -27,5 +27,5 @@ jobs:
           body: ${{ steps.tag_version.outputs.changelog }}
       - name: Upload an Entire Directory
         uses: actions/upload-artifact@v3
-          name: my-artifact
+          name: 'Artifact'
           path: path/to/artifact/
