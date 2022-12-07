@@ -7,21 +7,21 @@ on:
     branches: [ master ]
 
 
-env:
-  TAG_NAME: ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }}
-permissions:
-  contents: write
-
 jobs:
-  update_tag:
-    name: Update the major tag to include the ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }} changes
-    environment:
-      name: releaseNewActionVersion
+  build:
     runs-on: ubuntu-latest
     steps:
-    - name: Update the ${{ env.TAG_NAME }} tag
-      id: update-major-tag
-      uses: actions/publish-action@v0.1.0
-      with:
-        source-tag: ${{ env.TAG_NAME }}
-        slack-webhook: ${{ secrets.SLACK_WEBHOOK }}
+      - uses: actions/checkout@v2
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.5 # 가져다 쓸 auto tagging 프로그램
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} # secrets.GITHUB_TOKEN 는 자동생성됨
+      - name: Create a GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
