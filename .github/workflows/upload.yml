@@ -25,7 +25,12 @@ jobs:
           tag_name: ${{ steps.tag_version.outputs.new_tag }}
           release_name: Release ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
-      - name: Upload an Entire Directory
-        uses: actions/upload-artifact@v3
-          name: 'Artifact'
-          path: path/to/artifact/
+       - name: Create artifact files
+         run: |
+           mkdir -p path/to/dir
+           echo "Lorem ipsum dolor sit amet" > path/to/dir/file1.txt
+       - name: Upload artifact
+         uses: ./
+         with:
+           name: 'Artifact'
+           path: path/to/dir/file1.txt
