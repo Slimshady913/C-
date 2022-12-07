@@ -1,13 +1,11 @@
 name: Upload dotnet package
 
 on:
-  release:
-    types: [released]
-  workflow_dispatch:
-    inputs:
-      TAG_NAME:
-        description: 'Tag name that the major tag will point to'
-        required: true
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
 
 env:
   TAG_NAME: ${{ github.event.inputs.TAG_NAME || github.event.release.tag_name }}
